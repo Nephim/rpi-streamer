@@ -141,12 +141,15 @@ void videoStream(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	
-	std::thread vs(videoStream, argc, argv);
-	
-	soup s;
+	argumentHandler arg;
+	for(int i = 0; i < argc; ++i)
+	{
+		arg.addArgument(std::string(*(argv+i)));
+	}
+	std::thread vs(videoStream, arg.getargc(), arg.getargv());
 	sleep(10);
-	vs.~thread();
+	arg.print();
+	//vs.~thread();
 	while (true) {};
 	return 0;
 }
