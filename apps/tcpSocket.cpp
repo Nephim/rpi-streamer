@@ -1,20 +1,13 @@
 #include "tcpSocket.hpp"
 
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <unistd.h>
+#include <memory.h>
+
+
 
 
 tcpSocket::tcpSocket(int portnum)
-	: m_portnum(portnum), m_buffer(new char(m_bufferSize))
-{}
-
-tcpSocket::~tcpSocket()
-{
-	delete[] m_buffer;
-}
-
-void tcpSocket::sockListen()
+	: m_buffer(new char(m_bufferSize)), m_fd(0)
 {
 	m_fdListen = socket(AF_INET, SOCK_STREAM, 0);
 	if (m_fdListen < 0)
@@ -23,30 +16,51 @@ void tcpSocket::sockListen()
 	sockaddr_in server_saddr = {};
 	server_saddr.sin_family = AF_INET;
 	server_saddr.sin_addr.s_addr = INADDR_ANY;
-	server_saddr.sin_port = htons(m_portnum);
+	server_saddr.sin_port = htons(portnum);
 		int enable = 1;
-	if (setsockopt(m_fdListen, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0)
-		throw std::runtime_error("failed to setsockopt listen socket");
-		if (bind(m_fdListen, (struct sockaddr *)&server_saddr, sizeof(server_saddr)) < 0)
-				throw std::runtime_error("failed to bind listen socket");
+	setsockopt(m_fdListen, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
+
+	if (bind(m_fdListen, (struct sockaddr *)&server_saddr, sizeof(server_saddr)) < 0)
+			throw std::runtime_error("failed to bind listen socket");
+}
+
+tcpSocket::~tcpSocket()
+{
+	delete[] m_buffer;
+}
+
+void tcpSocket::startConnection()
+{
+
 	listen(m_fdListen, 1);
-	//LOG(2, "Waiting for client to connect...");
 	m_sockaddrInSize = sizeof(m_saddr);
 	m_fd = accept(m_fdListen, (struct sockaddr *)&m_saddr, &m_sockaddrInSize);
 	if (m_fd < 0)
 	{
 		throw std::runtime_error("accept socket failed");
 	}
-		
-		//LOG(2, "Client connection accepted");
+	// Get connection info
+	LOG_DEBUG("Connection established on " << inet_ntoa(m_saddr.sin_addr) << ":" << std::to_string(m_saddr.sin_port) << std::endl);
+	
+}
 
-	read(m_fd, m_buffer, m_bufferSize);
-	//std::cout << m_buffer << "\n";
+void tcpSocket::closeConnection()
+{
 	close(m_fd);
 	close(m_fdListen);
 }
 
+void tcpSocket::sendCommand(std::string str)
+{
+	write(m_fd, str.c_str(), str.length()+1);
+}
+
 std::string tcpSocket::getString()
 {
+	memset(m_buffer, 0, m_bufferSize - 1);
+	if(!read(m_fd, m_buffer, m_bufferSize)) // If connection is borked listen for new.
+		startConnection();
 	return std::string(m_buffer);
+
 }
+

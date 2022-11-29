@@ -1,11 +1,41 @@
 #include "argumentHandler.hpp"
 
-#include <sstream>
+#include<sstream>
+
+void argumentHandler::allocateArg()
+{
+	if(m_argc == m_argSize)
+	{
+		m_argSize *= 2;								//double size
+		char** tmpArgV = new char*[m_argSize];		// alocate tmp array
+		for(int i = 0; i < m_argc; ++i)
+		{
+			*(tmpArgV + i) = *(m_argv + i); //moving the pointers to arguments over
+		}
+		delete[] m_argv;
+		m_argv = tmpArgV;
+	}
+}
+void argumentHandler::clearArgs()
+{
+	for(int i = 0; i < m_argc; ++i)
+	{
+		delete[] m_argv[i];
+	}
+	delete [] m_argv;
+	m_argSize = 10;
+	m_argc = 0;
+	m_argv = new char*[m_argSize];
+}
 
 argumentHandler::argumentHandler(int argc, char* argv[], int argSize)
 	: m_argc(argc), m_argv(argv), m_argSize(argSize)
 {
-	m_argv = new char*[m_argSize];
+	if(m_argv == nullptr)
+	{
+		m_argv = new char*[m_argSize];
+	}
+	
 }
 
 argumentHandler::~argumentHandler()
@@ -20,40 +50,32 @@ argumentHandler::~argumentHandler()
 void argumentHandler::addArgument(const std::string arg)
 {
 	allocateArg();
-	*(m_argv + m_argc) = new char(arg.length()+1);
-	strcpy(*(m_argv + m_argc), arg.c_str());
+	m_argv[m_argc] = new char(arg.length()+1);
+	strcpy(m_argv[m_argc], arg.c_str());
 	++m_argc;
 }
 
-void argumentHandler::stringInput(std::string str)
+void argumentHandler::stringInput(const std::string str)
 {
-	// std::size_t pos; 								// allocate size_t
-	// while(!str.empty())
-	// {
-	// 	pos = str.find(" ");						//find the next space
-	// 	addArgument(str.substr(pos));				//save the word.
-	// 	str.erase(0, pos);							//remove the word.
-	// }
-
+	clearArgs();
+	char ch;
 	std::string word;
-	std::stringstream stringStream(str);
-	while (stringStream >> word)
-   	{
-		addArgument(word);
-	}
-}
-
-void argumentHandler::allocateArg()
-{
-	if(m_argc == m_argSize)
+	for(unsigned long i = 0; i <= str.length(); ++i)
 	{
-		char** tmpArgV = new char*[m_argSize*2];
-		for(int i = 0; i < m_argSize; ++i)
+		ch = str[i];
+		if (isspace(ch))
 		{
-			*(tmpArgV + i) = *(m_argv + i); //moving the pointers to arguments over
+			addArgument(word);
+			word = "";
+		}
+		else
+		{
+		word += ch;
 		}
 	}
+	addArgument(word);
 }
+
 int argumentHandler::getargc()
 {
 	return m_argc;
@@ -62,10 +84,24 @@ char** argumentHandler::getargv()
 {
 	return m_argv;
 }
+char* argumentHandler::getCommand()
+{
+	return m_argv[0]; // The command string
+}
+
+std::string argumentHandler::getString()
+{
+	std::string str;
+	for(int i = 0; i < m_argc; ++i)
+	{
+		str.append(m_argv[i]);
+	}
+	return str;
+}
 
 void argumentHandler::print() const
 {
-	std::cout << "Arguments:\n";
+	std::cout << "Arguments: " << m_argc << "\n";
 	for(int i = 0; i < m_argc; ++i)
 	{
 		std::cout << *(m_argv+i) << " ";

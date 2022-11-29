@@ -6,13 +6,13 @@
 #include <stdexcept>
 #include <iostream>
 
-//#include "output/output.hpp"
+#define LOG_DEBUG(text) std::cout << text << std::endl
 
 class tcpSocket
 {
 private:
 	char* m_buffer;
-	const int m_bufferSize = 256;
+	const unsigned int m_bufferSize = 256;
 	int m_portnum;
 	int m_fd;
 	int m_fdListen;
@@ -21,8 +21,10 @@ private:
 	socklen_t m_sockaddrInSize;
 
 public:
-	tcpSocket(int portnum = 9000);
+	tcpSocket(int portnum);
 	~tcpSocket();
-	void sockListen();
+	void startConnection();
+	void closeConnection();
+	void sendCommand(std::string str);
 	std::string getString();
 };

@@ -21,7 +21,7 @@ cmake_minimum_required(VERSION 3.6)
 # target_link_libraries(libcamera-jpeg libcamera_app images)
 
 project(rpi-camera-streamer)
-add_executable(rpi-camera-streamer rpi-camera-streamer.cpp argumentHandler.cpp)
+add_executable(rpi-camera-streamer rpi-camera-streamer.cpp argumentHandler.cpp tcpSocket.cpp client.cpp engineControl.cpp microController.cpp msgQueue.cpp UARTBoostDriver.cpp videoStream.cpp)
 target_link_libraries(rpi-camera-streamer libcamera_app encoders outputs)
 
 set(EXECUTABLES rpi-camera-streamer) #libcamera-still libcamera-vid libcamera-hello libcamera-raw libcamera-jpeg
