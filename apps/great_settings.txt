@@ -25,4 +25,8 @@ ffplay udp://192.168.1.71:8000 -fflags nobuffer -flags low_delay -framedrop -fra
 //192.168.1.71/PI-share /home/stud/PI-share cifs user=stud,pass=stud,uid=stud,gid=stud 0 0
 
 
-rpi-streamer -t 0 --inline -o udp://192.168.204.130:8000 --codec mjpeg --width 1640 --height 1232
+rpi-streamer -t 0 --inline -o udp://192.168.1.4:8000 --codec mjpeg --width 1640 --height 1232
+
+rpi-streamer -t 0 --inline -o udp://192.168.1.4:8000 --codec mjpeg --width 1640 --height 1232 --framerate 40 --vflip
+
+rpi-streamer -t 0 --inline -o udp://192.168.1.4:8000 --codec h264 --width 1640 --height 1232 --vflip
