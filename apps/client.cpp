@@ -20,6 +20,12 @@ void client::setMicroControllerMsgQueue(msgQueue* microControllerMsgQueue)
 	m_microControllerMsgQueue = microControllerMsgQueue;
 }
 
+void client::join()
+{
+	m_tcpSocketThread.join();
+	m_eventLoopThread.join();
+}
+
 void client::tcpSocketLoop()
 {
 	m_socket.startConnection();
@@ -62,6 +68,10 @@ void client::tcpSocketLoop()
 			unsigned long id = microController::ID_MOVE;
 			message* msg = new microController::moveMsg(stopCommand);
 			m_microControllerMsgQueue->send(id, msg);
+		}
+		else if (std::string("rpi-streamer-stop").compare(arg.getCommand()) == 0)
+		{
+			m_videoStream.stop();
 		}
 		else
 		{

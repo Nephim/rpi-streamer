@@ -26,6 +26,12 @@ void microController::setClientHandlerMsgQueue(msgQueue* clientMsgQueue)
 	m_clientMsgQueue = clientMsgQueue;
 }
 
+void microController::join()
+{
+	m_uartInputThread.join();
+	m_eventLoopThread.join();
+}
+
 void microController::eventLoop()
 {
 	for(;;)
@@ -100,4 +106,3 @@ void microController::uartInput() // Seperate Thread
 		m_msgQueue->send(id, msg);
 	}
 }
-

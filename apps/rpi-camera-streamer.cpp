@@ -7,7 +7,7 @@ int main()
 	client myClient;
 	microController myMicroController(myClient.getMsgQueue());
 	myClient.setMicroControllerMsgQueue(myMicroController.getMsgQueue());
-	while (true) 
-		{};
+	myClient.join();
+	myMicroController.join();
 	return 0;
 }

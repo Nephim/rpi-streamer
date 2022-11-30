@@ -50,6 +50,7 @@ class microController
 		~microController();
 		msgQueue* getMsgQueue() const;
 		void setClientHandlerMsgQueue(msgQueue* clientMsgQueue);
+		void join();
 	};
 
 

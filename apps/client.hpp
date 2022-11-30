@@ -41,5 +41,6 @@ public:
 	client(msgQueue* microControllerMsgQueue = nullptr);
 	msgQueue* getMsgQueue() const;
 	void setMicroControllerMsgQueue(msgQueue* microControllerMsgQueue);
+	void join();
 	
 };
