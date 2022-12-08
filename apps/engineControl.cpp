@@ -29,7 +29,7 @@ uint8_t engineControl::move(argumentHandler& arg)
 			return 0;
 		break;
 	}
-	std::cout << "I moved " << arg.getargv()[1][0] << " with " << arg.getargc() << "\n";
+	std::cout << "I moved " << arg.getargv()[1][0] << " with " << arg.getargc() << "\n"; //Debug info
 }
 
 uint8_t engineControl::stop(argumentHandler& arg)

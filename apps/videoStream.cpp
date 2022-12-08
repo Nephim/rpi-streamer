@@ -144,7 +144,7 @@ void videoStream::start(int argc, char *argv[])
 	m_thread = std::thread(&videoStream::videoStreamInit, this, m_argc, m_argv);
 }
 
-void videoStream::stop()
+void videoStream::stop()	//Graceful stop
 {
 	m_running = false;
 	m_thread.join();

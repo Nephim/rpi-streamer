@@ -6,17 +6,17 @@
 
 
 
-tcpSocket::tcpSocket(int portnum)
+tcpSocket::tcpSocket(int portnum)						// Setup listening socket on designated port
 	: m_buffer(new char(m_bufferSize)), m_fd(0)
 {
-	m_fdListen = socket(AF_INET, SOCK_STREAM, 0);
+	m_fdListen = socket(AF_INET, SOCK_STREAM, 0);		// Create socket for incomming connections
 	if (m_fdListen < 0)
 		throw std::runtime_error("unable to open listen socket");
 
 	sockaddr_in server_saddr = {};
-	server_saddr.sin_family = AF_INET;
-	server_saddr.sin_addr.s_addr = INADDR_ANY;
-	server_saddr.sin_port = htons(portnum);
+	server_saddr.sin_family = AF_INET;					//IPv4
+	server_saddr.sin_addr.s_addr = INADDR_ANY;			//Accept any address
+	server_saddr.sin_port = htons(portnum);		//Set port number
 		int enable = 1;
 	setsockopt(m_fdListen, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 
@@ -26,10 +26,12 @@ tcpSocket::tcpSocket(int portnum)
 
 tcpSocket::~tcpSocket()
 {
+	closeConnection()
+	close(m_fdListen);
 	delete[] m_buffer;
 }
 
-void tcpSocket::startConnection()
+void tcpSocket::startConnection()	//Listen for a new connection
 {
 
 	listen(m_fdListen, 1);
@@ -47,7 +49,6 @@ void tcpSocket::startConnection()
 void tcpSocket::closeConnection()
 {
 	close(m_fd);
-	close(m_fdListen);
 }
 
 void tcpSocket::sendCommand(std::string str)
@@ -57,10 +58,9 @@ void tcpSocket::sendCommand(std::string str)
 
 std::string tcpSocket::getString()
 {
-	memset(m_buffer, 0, m_bufferSize - 1);
+	memset(m_buffer, 0, m_bufferSize - 1);	// Clear input buffer
 	if(!read(m_fd, m_buffer, m_bufferSize)) // If connection is borked listen for new.
 		startConnection();
 	return std::string(m_buffer);
-
 }
 

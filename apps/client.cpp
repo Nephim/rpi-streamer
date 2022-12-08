@@ -29,33 +29,33 @@ void client::join()
 void client::tcpSocketLoop()
 {
 	m_socket.startConnection();
-	argumentHandler arg;
+	argumentHandler arg;		//Handler for emulating normal program arguments
 	for(;;)
 	{
 		arg.stringInput(m_socket.getString());
-		arg.print();
-		if(std::string("rpi-streamer").compare(arg.getCommand()) == 0)
+		arg.print();			// Debug print
+		if(std::string("rpi-streamer").compare(arg.getCommand()) == 0)		// Start video stream
 		{
-			if (m_videoStream.isRunning())
+			if (m_videoStream.isRunning())		// Stopping the thread gracefully
 			{
 				m_videoStream.stop();
 			}
 			m_videoStream.start(arg.getargc(), arg.getargv());
 		} 
-		else if (std::string("move").compare(arg.getCommand()) == 0)
+		else if (std::string("move").compare(arg.getCommand()) == 0)		//Move the car
 		{
 			if(m_microControllerMsgQueue == nullptr)
 			{
 				std::cout << "m_microControllerMsgQueue is a nullptr\n";
 				return;
 			}
-			uint8_t moveCommand = m_engine.move(arg);
+			uint8_t moveCommand = m_engine.move(arg);						//Translate command from socket to byte command for UART.
 			std::cout << "Move Command " << std::to_string(moveCommand) << "\n";
 			unsigned long id = microController::ID_MOVE;
 			message* msg = new microController::moveMsg(m_engine.move(arg));
 			m_microControllerMsgQueue->send(id, msg);
 		}
-		else if (std::string("stop").compare(arg.getCommand()) == 0)
+		else if (std::string("stop").compare(arg.getCommand()) == 0)		//Stop the car
 		{
 			if(m_microControllerMsgQueue == nullptr)
 			{
@@ -63,20 +63,20 @@ void client::tcpSocketLoop()
 				return;
 			}
 			
-			uint8_t stopCommand = m_engine.stop(arg);
+			uint8_t stopCommand = m_engine.stop(arg);						//Translation
 			std::cout << "Stop Command " << std::to_string(stopCommand) << "\n";
 			unsigned long id = microController::ID_MOVE;
-			for(int i = 0; i < 10; ++i)
+			for(int i = 0; i < 5; ++i)										//Debug for loop to make sure it stops
 			{
 				message* msg = new microController::moveMsg(stopCommand);
 				m_microControllerMsgQueue->send(id, msg);
 			}
 		}
-		else if (std::string("rpi-streamer-stop").compare(arg.getCommand()) == 0)
+		else if (std::string("rpi-streamer-stop").compare(arg.getCommand()) == 0)	//Stop video stream
 		{
 			m_videoStream.stop();
 		}
-		else if (std::string("raceMode").compare(arg.getCommand()) == 0)
+		else if (std::string("raceMode").compare(arg.getCommand()) == 0)	// Sets racemode on or off from socket
 		{
 			if(m_microControllerMsgQueue == nullptr)
 			{
@@ -97,7 +97,7 @@ void client::tcpSocketLoop()
 	}	
 }
 
-void client::eventLoop()
+void client::eventLoop()		// MsgQueue event loop
 {
 	for(;;)
 	{
