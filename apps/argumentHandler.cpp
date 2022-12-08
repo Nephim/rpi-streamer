@@ -3,13 +3,10 @@
 #include<sstream>
 
 
-argumentHandler::argumentHandler(int argc, char* argv[], int argSize) //Parametrized constructor
-	: m_argc(argc), m_argv(argv), m_argSize(argSize)
+argumentHandler::argumentHandler(int argc, char* argv[], int argSize) //Default constructor
+	: m_argc(argc), m_argSize(argSize)
 {
-	if(m_argv == nullptr)
-	{
-		m_argv = new char*[m_argSize];
-	}
+	m_argv = new char*[m_argSize];
 }
 
 argumentHandler::~argumentHandler()
@@ -37,11 +34,7 @@ void argumentHandler::allocateArg()		//Will allocate "enough" space
 }
 void argumentHandler::clearArgs()		//Clears the heap allocated elements
 {
-	for(int i = 0; i < m_argc; ++i)
-	{
-		delete[] m_argv[i];
-	}
-	delete [] m_argv;
+	argumentHandler::~argumentHandler();
 	m_argSize = constARG_SIZE;						//Allocates new array of standard size
 	m_argc = 0;
 	m_argv = new char*[m_argSize];
@@ -95,7 +88,7 @@ std::string argumentHandler::getString()	//Method to recreate c++ string
 	std::string str;
 	for(int i = 0; i < m_argc; ++i)
 	{
-		str.append(m_argv[i]);
+		str.append(std::string(m_argv[i] + ' '));
 	}
 	return str;
 }

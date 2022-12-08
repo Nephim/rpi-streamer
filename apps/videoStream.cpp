@@ -105,7 +105,7 @@ void videoStream::event_loop(LibcameraEncoder &app)
 		app.EncodeBuffer(completed_request, app.VideoStream());
 		if(!m_running)
 		{
-			app.StopCamera(); // stop complains if encoder very slow to close
+			app.StopCamera();
 			app.StopEncoder();
 			return;
 		}
@@ -138,10 +138,8 @@ videoStream::videoStream(int argc, char *argv[])
 
 void videoStream::start(int argc, char *argv[])
 {
-	m_argc = argc;
-	m_argv = argv;
 	m_running = true;
-	m_thread = std::thread(&videoStream::videoStreamInit, this, m_argc, m_argv);
+	m_thread = std::thread(&videoStream::videoStreamInit, this, argc, argv);
 }
 
 void videoStream::stop()	//Graceful stop
