@@ -36,7 +36,7 @@ void client::tcpSocketLoop()
 		arg.print();
 		if(std::string("rpi-streamer").compare(arg.getCommand()) == 0)
 		{
-			if (m_videoStream.isRunning() == true)
+			if (m_videoStream.isRunning())
 			{
 				m_videoStream.stop();
 			}
@@ -66,16 +66,31 @@ void client::tcpSocketLoop()
 			uint8_t stopCommand = m_engine.stop(arg);
 			std::cout << "Stop Command " << std::to_string(stopCommand) << "\n";
 			unsigned long id = microController::ID_MOVE;
-			message* msg = new microController::moveMsg(stopCommand);
-			m_microControllerMsgQueue->send(id, msg);
+			for(int i = 0; i < 10; ++i)
+			{
+				message* msg = new microController::moveMsg(stopCommand);
+				m_microControllerMsgQueue->send(id, msg);
+			}
 		}
 		else if (std::string("rpi-streamer-stop").compare(arg.getCommand()) == 0)
 		{
 			m_videoStream.stop();
 		}
+		else if (std::string("raceMode").compare(arg.getCommand()) == 0)
+		{
+			if(m_microControllerMsgQueue == nullptr)
+			{
+				std::cout << "m_microControllerMsgQueue is a nullptr\n";
+				return;
+			}
+			uint8_t command = (std::string("on").compare(arg.getargv()[1]) ? 0 : 1);
+			unsigned long id = microController::ID_raceMode;
+			message* msg = new microController::raceMode(command);
+			m_microControllerMsgQueue->send(id, msg);
+		}
 		else
 		{
-			m_socket.sendCommand("Unknown command " + arg.getString() + "\n");
+			m_socket.sendCommand(("Unknown command: " + arg.getString() + "\n"));
 			std::cout << "Unknown command\n";
 			arg.print();
 		}
@@ -112,9 +127,11 @@ void client::dispatcher(message* msg, unsigned long id)
 void client::beerChangeHandler(message* msg)
 {
 	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_str);
+	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_str << "\n";
 }
 
 void client::distanceChangeHandler(message* msg)
 {
 	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_str);
+	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_str << "\n";
 }

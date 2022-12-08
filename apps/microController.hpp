@@ -14,10 +14,10 @@ class microController
 		UARTDriver* m_uart;
 		msgQueue* m_msgQueue;
 		msgQueue* m_clientMsgQueue;
-		void moveHandler();
 		void beerChangeHandler(message* msg);
 		void distanceChangeHandler(message* msg);
 		void moveHandler(message* msg);
+		void raceModeHandler(message* msg);
 		void dispatcher(message* msg, unsigned long id);
 		void eventLoop();
 		void uartInput();
@@ -40,11 +40,21 @@ class microController
 			uint8_t m_output;
 		};
 
+		struct raceMode : message
+		{
+			raceMode(uint8_t output)
+			{
+				m_output = output;
+			}
+			uint8_t m_output;
+		};
+
 		enum 
 		{
 			ID_BEER_AMOUNT_CHANGE,
 			ID_DISTANCE_CHANGE,
-			ID_MOVE
+			ID_MOVE,
+			ID_raceMode
 		};
 		microController(msgQueue* clientMsgQueue = nullptr);
 		~microController();

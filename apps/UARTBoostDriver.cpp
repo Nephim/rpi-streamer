@@ -28,15 +28,15 @@ UARTDriver::~UARTDriver()
 int UARTDriver::open_port(std::string devicePort)
 {
 	port.open(devicePort); // Hvis i bruger en USB2Uart ting
-    port.set_option(asio::serial_port_base::baud_rate(115200));
+    port.set_option(asio::serial_port_base::baud_rate(9600));
 
 	return 1;
 }
 
 void UARTDriver::write_to_port(char n)
 {
-	int bytes_written = port.write_some(asio::buffer(&n, 1));
-	printf("Bytes written: %d\n", bytes_written);
+	port.write_some(asio::buffer(&n, 1));
+	printf("Wrote: %x\n", n);
 }
 
 char UARTDriver::read_from_port() 

@@ -2,6 +2,8 @@
 
 #include "client.hpp"
 
+#include <iomanip>
+
 
 microController::microController(msgQueue* clientHandlerMsgQueue)
 	: m_uart(new UARTDriver), m_msgQueue(new msgQueue), m_clientMsgQueue(clientHandlerMsgQueue)
@@ -57,6 +59,9 @@ void microController::dispatcher(message* msg, unsigned long id)
 		case ID_MOVE:
 			moveHandler(msg);
 		break;
+		case ID_raceMode:
+			moveHandler(msg);
+		break;
 	}
 }
 
@@ -75,8 +80,12 @@ void microController::distanceChangeHandler(message* msg) 	//INPUT
 
 void microController::moveHandler(message* msg)				//OUTPUT
 {
-	std::cout << static_cast<microController::moveMsg*>(msg)->m_output;
 	m_uart->write_to_port(static_cast<microController::moveMsg*>(msg)->m_output);
+}
+
+void microController::raceModeHandler(message* msg)			//OUTPUT
+{
+	m_uart->write_to_port(static_cast<microController::raceMode*>(msg)->m_output);
 }
 
 void microController::uartInput() // Seperate Thread
@@ -90,16 +99,14 @@ void microController::uartInput() // Seperate Thread
 		if (input > 0b1111111)				//127 - Distance
 		{
 			std::string str("distance ");
-			str.append(std::to_string(input & 0b1111111));
-			//str.insert(str.length(), 1, static_cast<char>(input & 0b1111111));
+			str.append(std::to_string(static_cast<int>(input & 0b1111111)));
 			msg = new microController::uartInputMsg(str);
 			id = ID_DISTANCE_CHANGE;
 		}
 		else								// Amount of beer
 		{
 			std::string str("beer ");
-			str.append(std::to_string(input & 0b1111111));
-			//str.insert(str.length(), 1, static_cast<char>(input & 0b1111111));
+			str.append(std::to_string(static_cast<int>(input & 0b1111111)));
 			msg = new microController::uartInputMsg(str);
 			id = ID_BEER_AMOUNT_CHANGE;
 		}
