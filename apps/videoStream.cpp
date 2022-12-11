@@ -138,6 +138,10 @@ videoStream::videoStream(int argc, char *argv[])
 
 void videoStream::start(int argc, char *argv[])
 {
+	if(m_running)
+	{
+		stop();
+	}
 	m_running = true;
 	m_thread = std::thread(&videoStream::videoStreamInit, this, argc, argv);
 }

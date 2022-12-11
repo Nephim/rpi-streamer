@@ -29,9 +29,9 @@ public:
 	{
 		returnMsg(std::string str)
 		{
-			m_str = str;
+			m_output = str;
 		}
-		std::string m_str;
+		std::string m_output;
 	};
 	enum
 	{
