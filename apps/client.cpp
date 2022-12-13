@@ -122,12 +122,12 @@ void client::dispatcher(message* msg, unsigned long id)
 
 void client::beerChangeHandler(message* msg)
 {
-	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_str);
-	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_str << "\n";
+	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_output);
+	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_output << "\n";
 }
 
 void client::distanceChangeHandler(message* msg)
 {
-	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_str);
-	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_str << "\n";
+	m_socket.sendCommand(static_cast<returnMsg*>(msg)->m_output);
+	std::cout << "Client Handler: " << static_cast<returnMsg*>(msg)->m_output << "\n";
 }

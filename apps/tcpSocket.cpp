@@ -26,7 +26,7 @@ tcpSocket::tcpSocket(int portnum)						// Setup listening socket on designated p
 
 tcpSocket::~tcpSocket()
 {
-	closeConnection()
+	closeConnection();
 	close(m_fdListen);
 	delete[] m_buffer;
 }

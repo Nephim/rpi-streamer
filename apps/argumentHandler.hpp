@@ -12,7 +12,7 @@ private:
 	void allocateArg();
 	void clearArgs();
 public:
-	argumentHandler(int argc = 0, char* argv[] = nullptr, int argSize = constARG_SIZE);
+	argumentHandler(int argc = 0, char* argv[] = nullptr, int argSize = 10);
 	~argumentHandler();
 	void addArgument(const std::string arg);
 	void stringInput(const std::string str);
