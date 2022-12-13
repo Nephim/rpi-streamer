@@ -49,12 +49,12 @@ void microController::dispatcher(message* msg, unsigned long id)
 {
 	switch(id)
 	{
-		case ID_BEER_AMOUNT_CHANGE:
-			beerChangeHandler(msg);
-		break;
-		case ID_DISTANCE_CHANGE:
-			distanceChangeHandler(msg);
-		break;
+		// case ID_BEER_AMOUNT_CHANGE:
+		// 	beerChangeHandler(msg);
+		// break;
+		// case ID_DISTANCE_CHANGE:
+		// 	distanceChangeHandler(msg);
+		// break;
 		case ID_MOVE:
 			moveHandler(msg);
 		break;
