@@ -14,22 +14,22 @@ class microController
 		UARTDriver* m_uart;
 		msgQueue* m_msgQueue;
 		msgQueue* m_clientMsgQueue;
-		void beerChangeHandler(message* msg);
-		void distanceChangeHandler(message* msg);
+		// void beerChangeHandler(message* msg);
+		// void distanceChangeHandler(message* msg);
 		void moveHandler(message* msg);
 		void raceModeHandler(message* msg);
 		void dispatcher(message* msg, unsigned long id);
 		void eventLoop();
 		void uartInput();
 	public:
-		struct uartInputMsg : message
-		{
-			uartInputMsg(std::string str) 
-			{
-				m_input = str;
-			}
-			std::string m_input;
-		};
+		// struct uartInputMsg : message
+		// {
+		// 	uartInputMsg(std::string str) 
+		// 	{
+		// 		m_input = str;
+		// 	}
+		// 	std::string m_input;
+		// };
 
 		struct moveMsg : message
 		{

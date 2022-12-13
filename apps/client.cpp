@@ -36,10 +36,6 @@ void client::tcpSocketLoop()
 		arg.print();			// Debug print
 		if(std::string("rpi-streamer").compare(arg.getCommand()) == 0)		// Start video stream
 		{
-			if (m_videoStream.isRunning())		// Stopping the thread gracefully
-			{
-				m_videoStream.stop();
-			}
 			m_videoStream.start(arg.getargc(), arg.getargv());
 		} 
 		else if (std::string("move").compare(arg.getCommand()) == 0)		//Move the car

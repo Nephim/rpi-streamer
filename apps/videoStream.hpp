@@ -24,10 +24,10 @@ private:
 	int get_colourspace_flags(std::string const &codec);
 	void event_loop(LibcameraEncoder &app);
 	void videoStreamInit(int argc, char *argv[]);
-	void stop();
 public:
 	videoStream(int argc = 0, char *argv[] = nullptr);
 	void start(int argc = 0, char *argv[] = nullptr);
+	void stop();
 	bool isRunning() const;
 	~videoStream();
 };

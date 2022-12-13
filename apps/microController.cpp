@@ -1,5 +1,4 @@
 #include "microController.hpp"
-
 #include "client.hpp"
 
 #include <iomanip>
@@ -65,18 +64,17 @@ void microController::dispatcher(message* msg, unsigned long id)
 	}
 }
 
-void microController::beerChangeHandler(message* msg)		//INPUT
-{
-	m_clientMsgQueue->send(client::ID_BEER_UPDATE
-	, new client::returnMsg(static_cast<uartInputMsg*>(msg)->m_input));		// new type of message
-}
+// void microController::beerChangeHandler(message* msg)		//INPUT
+// {
+// 	m_clientMsgQueue->send(client::ID_BEER_UPDATE
+// 	, new client::returnMsg(static_cast<uartInputMsg*>(msg)->m_input));		// new type of message
+// }
 
-void microController::distanceChangeHandler(message* msg) 	//INPUT
-{
-	
-	m_clientMsgQueue->send(client::ID_DISTANCE_UPDATE
-	, new client::returnMsg(static_cast<uartInputMsg*>(msg)->m_input));		// new type of message
-}
+// void microController::distanceChangeHandler(message* msg) 	//INPUT
+// {
+// 	m_clientMsgQueue->send(client::ID_DISTANCE_UPDATE
+// 	, new client::returnMsg(static_cast<uartInputMsg*>(msg)->m_input));		// new type of message
+// }
 
 void microController::moveHandler(message* msg)				//OUTPUT
 {
@@ -96,20 +94,19 @@ void microController::uartInput() // Seperate Thread
 		input = m_uart->read_from_port();
 		message* msg;
 		unsigned long id;
+		std::string str;
 		if (input > 0b1111111)				//127 - Distance
 		{
-			std::string str("distance ");
-			str.append(std::to_string(static_cast<int>(input & 0b1111111)));
-			msg = new microController::uartInputMsg(str);
-			id = ID_DISTANCE_CHANGE;
+			str = "distance ";
+			id = client::ID_DISTANCE_UPDATE;
 		}
 		else								// Amount of beer
 		{
-			std::string str("beer ");
-			str.append(std::to_string(static_cast<int>(input & 0b1111111)));
-			msg = new microController::uartInputMsg(str);
-			id = ID_BEER_AMOUNT_CHANGE;
+			str = "beer ";
+			id = client::ID_BEER_UPDATE;
 		}
-		m_msgQueue->send(id, msg);
+		str.append(std::to_string(static_cast<int>(input & 0b1111111)));
+		msg = new client::returnMsg(str);
+		m_clientMsgQueue->send(id, msg);
 	}
 }

@@ -43,7 +43,6 @@ void tcpSocket::startConnection()	//Listen for a new connection
 	}
 	// Get connection info
 	LOG_DEBUG("Connection established on " << inet_ntoa(m_saddr.sin_addr) << ":" << std::to_string(m_saddr.sin_port) << std::endl);
-	
 }
 
 void tcpSocket::closeConnection()
